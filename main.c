@@ -19,15 +19,15 @@ int main(int argc, char **argv) {
   transform = new_matrix(4, 4);
   ident(transform);
 
+
+
   if ( argc == 2 )
-    parse_file( argv[1], transform, edges, s );
+    parse_file( argv[1], transform, edges, s);
   else
-    parse_file( "stdin", transform, edges, s );
+    parse_file( "stdin", transform, edges, s);
 
 
-  // c.red = 139;
-  // c.green = 69;
-  // c.blue = 19;
+
   // add_edge(edges, 100, 175, 0, 100, 375, 0);
   // add_edge(edges, 400, 175, 0, 400, 375, 0);
   // add_edge(edges, 100, 175, 0, 250, 100, 0);

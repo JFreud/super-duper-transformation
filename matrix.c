@@ -63,10 +63,10 @@ struct matrix * make_rotX(double theta) {
   theta = theta * M_PI / 180;
   struct matrix * rotator = new_matrix(4,4);
   ident(rotator);
-  rotator -> m[1][0] = sin(theta);
   rotator -> m[1][1] = cos(theta);
-  rotator -> m[2][0] = cos(theta);
-  rotator -> m[2][1] = -1 * sin(theta);
+  rotator -> m[1][2] = -1 * sin(theta);
+  rotator -> m[2][1] = sin(theta);
+  rotator -> m[2][2] = cos(theta);
   return rotator;
 }
 
@@ -80,10 +80,10 @@ struct matrix * make_rotY(double theta) {
   theta = theta * M_PI / 180;
   struct matrix * rotator = new_matrix(4,4);
   ident(rotator);
-  rotator -> m[0][0] = sin(theta);
-  rotator -> m[0][1] = cos(theta);
-  rotator -> m[2][0] = cos(theta);
-  rotator -> m[2][1] = -1 * sin(theta);
+  rotator -> m[0][0] = cos(theta);
+  rotator -> m[0][2] = -1 * sin(theta);
+  rotator -> m[2][0] = sin(theta);
+  rotator -> m[2][2] = cos(theta);
   return rotator;
 }
 

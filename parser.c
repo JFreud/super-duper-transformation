@@ -60,6 +60,10 @@ void parse_file ( char * filename,
   FILE *f;
   char line[256];
   clear_screen(s);
+  color c;
+  c.red = 139;
+  c.green = 69;
+  c.blue = 19;
 
 
   if ( strcmp(filename, "stdin") == 0 )
@@ -69,17 +73,18 @@ void parse_file ( char * filename,
 
   while (fgets(line, 255, f) != NULL ) {
     line[strlen(line)-1]='\0';
-    printf(":%s:\n",line);
+    // printf(":%s:\n",line);
 
     if (strcmp(line, "line") == 0) {
       double x0, x1, y0, y1, z0, z1;
       fgets(line, 255, f);
-      sscanf(line, "%lf %lf %lf %lf %lf", &x0, &y0, &z0, &x1, &y1, &z1);
+      sscanf(line, "%lf %lf %lf %lf %lf %lf", &x0, &y0, &z0, &x1, &y1, &z1);
       add_edge(edges, x0, y0, z0, x1, y1, z1);
     }
 
     else if (strcmp(line, "ident") == 0) {
       ident(transform);
+      clear_screen(s);
     }
 
     else if (strcmp(line, "scale") == 0) {
@@ -89,7 +94,7 @@ void parse_file ( char * filename,
       matrix_mult(make_scale(sx, sy, sz), transform);
     }
 
-    else if(strcmp(line, "translate") == 0) {
+    else if(strcmp(line, "move") == 0) {
       double tx, ty, tz;
       fgets(line, 255, f);
       sscanf(line, "%lf %lf %lf", &tx, &ty, &tz);
@@ -101,34 +106,46 @@ void parse_file ( char * filename,
       char axis;
       fgets(line, 255, f);
       sscanf(line, "%c %lf", &axis, &theta);
-      if (axis == "x") {
+      if (axis == 'x') {
         matrix_mult(make_rotX(theta), transform);
       }
-      else if (axis == "y") {
+      else if (axis == 'y') {
         matrix_mult(make_rotY(theta), transform);
       }
-      else if (axis == "z") {
+      else if (axis == 'z') {
         matrix_mult(make_rotZ(theta), transform);
       }
       else {
         printf("Ya dun goof. No axis called %c...\n", axis);
         exit(0);
       }
+      print_matrix(transform);
+      printf("\n");
     }
 
     else if(strcmp(line, "apply") == 0) {
-      
+      matrix_mult(transform, edges);
     }
 
     else if(strcmp(line, "display") == 0) {
+      draw_lines(edges, s, c);
+      display(s);
     }
 
     else if(strcmp(line, "save") == 0) {
-
+      char * save_file = malloc(64);
+      draw_lines(edges, s, c);
+      fgets(line, 255, f);
+      sscanf(line, "%s", save_file);
+      save_extension(s, save_file);
     }
 
     else if(strcmp(line, "quit") == 0) {
+      exit(0);
+    }
 
+    else {
+      printf("Ya dun goof. Dis not a right command.\n");
     }
 
   }
