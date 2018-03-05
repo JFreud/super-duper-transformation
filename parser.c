@@ -10,6 +10,37 @@
 #include "parser.h"
 
 
+
+
+double get_pivot_x(struct matrix * edges) {
+  int i;
+  double total = 0;
+  for(i = 0; i < edges -> lastcol; i++) {
+    total += edges -> m[0][i];
+  }
+  return total / (edges -> lastcol);
+}
+
+double get_pivot_y(struct matrix * edges) {
+  int i;
+  double total = 0;
+  for(i = 0; i < edges -> lastcol; i++) {
+    total += edges -> m[1][i];
+  }
+  return total / (edges -> lastcol);
+}
+
+double get_pivot_z(struct matrix * edges) {
+  int i;
+  double total = 0;
+  for(i = 0; i < edges -> lastcol; i++) {
+    total += edges -> m[2][i];
+  }
+  return total / (edges -> lastcol);
+}
+
+
+
 /*======== void parse_file () ==========
 Inputs:   char * filename
           struct matrix * transform,
@@ -66,6 +97,7 @@ void parse_file ( char * filename,
   c.blue = 19;
 
 
+
   if ( strcmp(filename, "stdin") == 0 )
     f = stdin;
   else
@@ -106,6 +138,7 @@ void parse_file ( char * filename,
       char axis;
       fgets(line, 255, f);
       sscanf(line, "%c %lf", &axis, &theta);
+
       if (axis == 'x') {
         matrix_mult(make_rotX(theta), transform);
       }
@@ -119,12 +152,17 @@ void parse_file ( char * filename,
         printf("Ya dun goof. No axis called %c...\n", axis);
         exit(0);
       }
-      print_matrix(transform);
+      // print_matrix(transform);
       printf("\n");
     }
 
     else if(strcmp(line, "apply") == 0) {
+      double pivot_x = get_pivot_x(edges);
+      double pivot_y = get_pivot_y(edges);
+      double pivot_z = get_pivot_z(edges);
+      matrix_mult(make_translate(-1 * pivot_x, -1 * pivot_y, -1 * pivot_z), edges);
       matrix_mult(transform, edges);
+      matrix_mult(make_translate(pivot_x, pivot_y, pivot_z), edges);
     }
 
     else if(strcmp(line, "display") == 0) {
